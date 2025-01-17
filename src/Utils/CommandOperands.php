@@ -2,6 +2,8 @@
 
 namespace App\Utils;
 
+use InvalidArgumentException;
+
 class CommandOperands
 {
     /**

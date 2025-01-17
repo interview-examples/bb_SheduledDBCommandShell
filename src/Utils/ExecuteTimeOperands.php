@@ -7,6 +7,13 @@ use InvalidArgumentException;
 
 class ExecuteTimeOperands
 {
+    /**
+     * Проверяет и конвертирует строку в формат DATETIME.
+     *
+     * @param string $executeAt Входная строка
+     * @return string Конвертированная строка в формате DATETIME
+     * @throws InvalidArgumentException Если формат неверный
+     */
     public static function validateTime(string $executeAt): string {
         try {
             if (preg_match('/^\+(\d+h)?(\d+m)?(\d+s)?$/', $executeAt)) {

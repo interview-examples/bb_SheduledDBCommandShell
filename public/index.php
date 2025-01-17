@@ -6,7 +6,7 @@ $router->addRoute('GET', '/', function() use ($taskController) {
     $taskController->list();
 });
 $router->addRoute('GET', '/list', function() use ($taskController) {
-    $page = $_GET['page'] ?? 1;
+    $page = $_GET['page'] ?? 1; // FixMe: Resolved operands types are not complimentary, while they should be ([string, array] vs [int])
     $taskController->list((int)$page);
 });
 $router->addRoute('POST', '/create', function() use ($taskController) {

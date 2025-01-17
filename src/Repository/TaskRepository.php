@@ -26,8 +26,7 @@ class TaskRepository
 
     public function findAll(): array
     {
-        $stmt = $this->pdo->query("SELECT * FROM tasks ORDER BY executeAt ASC");
-        return $stmt->fetchAll(PDO::FETCH_CLASS, Task::class);
+        return $this->pdo->query("SELECT * FROM tasks ORDER BY executeAt ASC")->fetchAll(PDO::FETCH_CLASS, Task::class);
     }
 
     public function findPaginated(int $limit, float|int $offset): array
