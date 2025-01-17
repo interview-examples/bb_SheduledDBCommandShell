@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Repository\TaskRepository;
 use App\Service\TaskDataService;
+use App\Utils\ExecuteTimeOperands;
+use App\Utils\InputSanitizer;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use App\Model\Task;
 
 class TaskController
 {
@@ -57,7 +60,21 @@ class TaskController
                            String $description,
                            String $executeAt): void
     {
-        // ToDo
+        try {
+            $command = $this->service->validateCommand($command);
+            $task = new Task(
+                $command,
+                InputSanitizer::cleanString($description),
+                $executeAt,
+                'new',
+                $this->service
+            );
+            $this->repository->create($task);
+            $task->setStatus('created');
+            echo "Task created successfully.\n";
+        } catch (InvalidArgumentException $e) {
+            echo "Error: " . $e->getMessage() . "\n";
+        }
     }
 
     public function editTime(mixed $id, mixed $executeAt): void

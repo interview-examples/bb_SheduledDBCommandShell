@@ -8,7 +8,7 @@
     <h1>Tasks</h1>
     <ul>
         {% for task in tasks %}
-            <li>{{ task.getDescription() }} - {{ task.getExecuteAt() }}</li>
+            <li>{{ task.getDescription() }} - {{ task.getExecuteAt() }} - {{ task.getStatus() }}</li>
         {% endfor %}
     </ul>
 

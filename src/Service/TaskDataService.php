@@ -2,25 +2,17 @@
 
 namespace App\Service;
 
+use App\Utils\InputSanitizer;
+use InvalidArgumentException;
+
 class TaskDataService
 {
     public function validateCommand(string $command): string {
-        // ToDo
+        $allowedCommands = ["writedb", "sendemail", "outtoscreen"];
+        $command = strtolower(InputSanitizer::cleanString($command));
+        if (!in_array($command, $allowedCommands, true)) {
+            throw new InvalidArgumentException("Invalid command: $command");
+        }
         return $command;
-    }
-
-    public function validateTime(string $executeAt): string {
-        // ToDo
-        return $executeAt;
-    }
-
-    public function convertTimeToString(string $executeAt): string {
-        // ToDo
-        return $executeAt;
-    }
-
-    public function convertStringToTime(string $executeAt): string {
-        // ToDo
-        return $executeAt;
     }
 }

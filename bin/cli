@@ -2,6 +2,7 @@
 <?php
 
 require __DIR__ . '/../config/entrypoint.php';
+use Carbon\Carbon;
 
 $router->addRoute('CLI','tasks:list', function() use ($taskController) {
     $page = $_SERVER['argv'][2] ?? 1;
@@ -28,4 +29,9 @@ $router->addRoute('CLI', 'tasks:removeAll', function() use ($taskController) {
 
 $action = $_SERVER['argv'][1] ?? 'tasks:list';
 
-$router->dispatch('CLI', $action);
+try {
+    $router->dispatch('CLI', $action);
+} catch (InvalidArgumentException $e) {
+    echo "Error: " . $e->getMessage() . "\n";
+    include __DIR__ . '/../bin/cli-help.php';
+}

@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
 use InvalidArgumentException;
 
 class ExecuteTimeOperands
@@ -16,19 +17,23 @@ class ExecuteTimeOperands
      */
     public static function validateTime(string $executeAt): string {
         try {
+            $timezone = new CarbonTimeZone(2);
+            $timezone->toRegionTimeZone();
             if (preg_match('/^\+(\d+h)?(\d+m)?(\d+s)?$/', $executeAt)) {
                 $dateTime = Carbon::now();
+                $dateTime->setTimezone('Asia/Jerusalem');   // Note: Bad practise to hardcode timezone
                 $interval = self::parseInterval($executeAt);
                 $dateTime->add($interval);
             } else {
                 $dateTime = Carbon::parse($executeAt);
             }
-            if (!$dateTime || $dateTime->isFalse()) {
+            if (is_null($dateTime)) {
                 throw new InvalidArgumentException("Invalid date/time format: $executeAt");
             }
             if ($dateTime->isPast()) {
                 throw new InvalidArgumentException("Date/time cannot be in the past: $executeAt");
             }
+
             return $dateTime->format('Y-m-d H:i:s');
         } catch (\Exception $e) {
             throw new InvalidArgumentException("Invalid date/time format: $executeAt");
@@ -55,6 +60,7 @@ class ExecuteTimeOperands
      * @param string $intervalString Входная строка интервала (например, "+1h23m")
      * @return \DateInterval
      * @throws InvalidArgumentException Если формат неверный
+     * @throws \DateMalformedIntervalStringException
      */
     private static function parseInterval(string $intervalString): \DateInterval
     {

@@ -26,6 +26,6 @@ class Router
         }
 
         http_response_code(404);
-        echo "404: '" . InputSanitizer::cleanString($path) . "' not found";
+        echo "404: No route found for method '" . $method . "' and path '" . InputSanitizer::cleanString($path) . "'";
     }
 }

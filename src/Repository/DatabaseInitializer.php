@@ -29,7 +29,9 @@ class DatabaseInitializer
                 id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 command VARCHAR(255) NOT NULL,
                 description TEXT NOT NULL,
-                executeAt DATETIME NOT NULL
+                executeAt DATETIME NOT NULL,
+                status ENUM('pending', 'executed', 'error') NOT NULL DEFAULT 'pending',
+                INDEX executeAt (executeAt)
             )");
             //echo "Table 'tasks' has been created successfully (or existed before).\n";
         } catch(PDOException $e) {

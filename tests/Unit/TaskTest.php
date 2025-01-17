@@ -12,14 +12,16 @@ class TaskTest extends TestCase
     {
         $taskDataService = $this->createMock(TaskDataService::class);
 
+        $command = 'Test command';
         $description = 'Test task';
         $executeAt = '2023-01-01 12:00:00';
+        $status = 0;
 
-        $taskDataService->method('validateTime')->willReturn($executeAt);
+/*        $taskDataService->method('validateTime')->willReturn($executeAt);
         $taskDataService->method('convertStringToTime')->willReturn($executeAt);
-        $taskDataService->method('convertTimeToString')->willReturn($executeAt);
+        $taskDataService->method('convertTimeToString')->willReturn($executeAt);*/
 
-        $task = new Task($description, $executeAt, $taskDataService);
+        $task = new Task($command, $description, $executeAt, $status, $taskDataService);
 
         $this->assertEquals($description, $task->getDescription());
         $this->assertEquals($executeAt, $task->getExecuteAt());

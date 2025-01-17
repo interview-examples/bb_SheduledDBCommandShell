@@ -15,16 +15,19 @@ class Task
     private string $command;
     private string $description;
     private string $executeAt;
+    private string $status;
 
     public function __construct(string $command,
                                 string $description,
                                 string $executeAt,
+                                string $status,
                                 \App\Service\TaskDataService $taskDataService)
     {
         $this->taskDataService = $taskDataService;
         $this->setCommand($command);
         $this->setDescription($description);
         $this->setExecuteAt($executeAt);
+        $this->setStatus($status);
     }
 
     public function getId(): int {
@@ -71,5 +74,13 @@ class Task
 
     public function getExecuteAtCron(): string {
         return ExecuteTimeOperands::convertDatetimeToCronFormat($this->executeAt);
+    }
+
+    public function setStatus(string $status): void
+    {
+    }
+
+    public function getStatus(): string {
+        return $this->status;
     }
 }
