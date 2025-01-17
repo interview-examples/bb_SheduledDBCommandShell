@@ -14,7 +14,7 @@ class TaskRepository
         $this->pdo = $pdo;
     }
 
-    public function create(Task $task): Task
+    public function addTask(Task $task): Task
     {
         $stmt = $this->pdo->prepare("INSERT INTO tasks (command, description, executeAt, status) 
 VALUES (:command, :description, :executeAt, :status)");
@@ -36,7 +36,7 @@ VALUES (:command, :description, :executeAt, :status)");
         return new Task($task['command'], $task['description'], $task['executeAt'], $task['status']);
     }
 
-    public function editTime(int $id, Task $task): Task
+    public function editTimeTask(int $id, Task $task): Task
     {
         $stmt = $this->pdo->prepare("UPDATE tasks SET executeAt = :executeAt, status = :status WHERE id = :id");
         $stmt->execute([
@@ -72,12 +72,12 @@ VALUES (:command, :description, :executeAt, :status)");
         $this->pdo->query("DELETE FROM tasks");
     }
 
-    public function findAll(): array
+    public function findAllTasks(): array
     {
         return $this->pdo->query("SELECT * FROM tasks ORDER BY executeAt ASC")->fetchAll(PDO::FETCH_CLASS, Task::class);
     }
 
-    public function findPaginated(int $limit, float|int $offset): array
+    public function findTasksPaginated(int $limit, float|int $offset): array
     {
         $stmt = $this->pdo->prepare("SELECT * FROM tasks LIMIT :limit OFFSET :offset");
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -87,10 +87,15 @@ VALUES (:command, :description, :executeAt, :status)");
         return $stmt->fetchAll(PDO::FETCH_CLASS, Task::class);
     }
 
-    public function countAll(): int
+    public function countAllTasks(): int
     {
         $stmt = $this->pdo->query("SELECT COUNT(*) FROM tasks");
 
         return (int)$stmt->fetchColumn();
+    }
+
+    public function removeAllTasks()
+    {
+        $stmt = $this->pdo->query("DELETE FROM tasks");
     }
 }

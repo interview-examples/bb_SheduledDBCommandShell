@@ -35,11 +35,11 @@ class TaskController
         $offset = ($page - 1) * $tasksPerPage;
 
         if ($offset < 0) {
-            $tasks = $this->repository->findAll();
+            $tasks = $this->repository->findAllTasks();
         } else {
-            $tasks = $this->repository->findPaginated($tasksPerPage, $offset);
+            $tasks = $this->repository->findTasksPaginated($tasksPerPage, $offset);
         }
-        $totalTasks = $this->repository->countAll();
+        $totalTasks = $this->repository->countAllTasks();
 
         if ($totalTasks > 0) {
             $this->twig->display('tasks/list.html.twig', [
@@ -65,7 +65,7 @@ class TaskController
                 'new',
                 $this->service
             );
-            $this->repository->create($task);
+            $this->repository->addTask($task);
             $task->setStatus('created');
             echo "Task created successfully.\n";
         } catch (InvalidArgumentException $e) {
@@ -78,7 +78,7 @@ class TaskController
         try {
             $task = $this->repository->findTaskById($id);
             $task->setExecuteAt($executeAt);
-            $this->repository->editTime($id, $task);
+            $this->repository->editTimeTask($id, $task);
         } catch (\InvalidArgumentException $e) {
             echo "Error: " . $e->getMessage() . "\n";
         }
@@ -93,8 +93,12 @@ class TaskController
         }
     }
 
-    public function deleteAll(): void
+    public function removeAll(): void
     {
-        // ToDo
+        try {
+            $this->repository->removeAllTasks();
+        } catch (\InvalidArgumentException $e) {
+            echo "Error: " . $e->getMessage() . "\n";
+        }
     }
 }

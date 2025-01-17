@@ -1,13 +1,20 @@
 <?php
 echo "**************************************************\n";
 echo "*                                                *\n";
-echo "*     BeachBum CLI Help                          *\n";
+echo "*              BeachBum CLI Help                 *\n";
+echo "*             ===================                *\n";
 echo "*                                                *\n";
-echo "*  tasks:list [page start]                       *\n";
+echo "*  tasks:list [start_page]                       *\n";
 echo "*  task:add [command] [description] [executeAt]  *\n";
 echo "*  task:edit [id] [executeAt]                    *\n";
 echo "*  task:delete [id]                              *\n";
 echo "*  tasks:removeAll                               *\n";
+echo "*                                                *\n";
+echo "*  Available commands:                           *\n";
+echo "*  ~~~~~~~~~~~~~~~~~~~                           *\n";
+echo '*  "Write to DB"                                 *'; echo "\n";
+echo '*  "Send email"                                  *'; echo "\n";
+echo '*  "Out to screen"                               *'; echo "\n";
 echo "*                                                *\n";
 echo "**************************************************\n";
 exit(0);

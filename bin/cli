@@ -24,7 +24,7 @@ $router->addRoute('CLI', 'task:delete', function() use ($taskController) {
     $taskController->delete($id);
 });
 $router->addRoute('CLI', 'tasks:removeAll', function() use ($taskController) {
-    $taskController->deleteAll();
+    $taskController->removeAll();
 });
 
 $action = $_SERVER['argv'][1] ?? 'tasks:list';

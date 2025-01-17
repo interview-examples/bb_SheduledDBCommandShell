@@ -25,7 +25,7 @@ $router->addRoute('POST', '/delete', function() use ($taskController) {
     $taskController->delete((int)$task_id);
 });
 $router->addRoute('GET', '/clear', function() use ($taskController) {
-    $taskController->deleteAll();
+    $taskController->removeAll();
 });
 
 $method = $_SERVER['REQUEST_METHOD'];
