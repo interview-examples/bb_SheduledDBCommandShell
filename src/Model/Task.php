@@ -2,15 +2,13 @@
 
 namespace App\Model;
 
-use App\Service\TaskDataService;
+use App\Utils\CommandOperands;
 use App\Utils\ExecuteTimeOperands;
 use App\Utils\InputSanitizer;
 use RuntimeException;
 
 class Task
 {
-    private TaskDataService $taskDataService;
-
     private int $id;
     private string $command;
     private string $description;
@@ -20,10 +18,8 @@ class Task
     public function __construct(string $command,
                                 string $description,
                                 string $executeAt,
-                                string $status,
-                                \App\Service\TaskDataService $taskDataService)
+                                string $status)
     {
-        $this->taskDataService = $taskDataService;
         $this->setCommand($command);
         $this->setDescription($description);
         $this->setExecuteAt($executeAt);
@@ -55,7 +51,7 @@ class Task
         return $this->command;
     }
     public function setCommand(string $command): void {
-        $this->command = $this->taskDataService->validateCommand($command);
+        $this->command = CommandOperands::validateCommand($command);
     }
 
     public function getDescription(): string {

@@ -7,11 +7,9 @@ $config = require __DIR__ . '/../config/database.php';
 use App\Framework\Router;
 use App\Repository\DatabaseInitializer;
 use App\Repository\TaskRepository;
-use App\Service\TaskDataService;
 use App\Controller\TaskController;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use Carbon\Carbon;
 
 DatabaseInitializer::initialize($config);
 
@@ -25,8 +23,7 @@ $pdo = new PDO(
 $loader = new FilesystemLoader(__DIR__ . '/../views');
 $twig = new Environment($loader);
 
-$taskDataService = new TaskDataService();
 $taskRepository = new TaskRepository($pdo);
-$taskController = new TaskController($taskRepository, $taskDataService, $twig);
+$taskController = new TaskController($taskRepository, $twig);
 
 $router = new Router();

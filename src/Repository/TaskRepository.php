@@ -28,6 +28,25 @@ VALUES (:command, :description, :executeAt, :status)");
         return $task;
     }
 
+    public function findTaskById(int $id): Task
+    {
+        $row = $this->pdo->prepare("SELECT * FROM tasks WHERE id = :id");
+        $row->execute(['id' => $id]);
+        $task = $row->fetch();
+        return new Task($task['command'], $task['description'], $task['executeAt'], $task['status']);
+    }
+
+    public function editTime(int $id, Task $task): Task
+    {
+        $stmt = $this->pdo->prepare("UPDATE tasks SET executeAt = :executeAt, status = :status WHERE id = :id");
+        $stmt->execute([
+            'id' => $id,
+            'executeAt' => $task->getExecuteAt(),
+            'status' =>'pending'
+        ]);
+        return $task;
+    }
+
     public function findTasksToExecute(string $currentTime): array
     {
         $stmt = $this->pdo->prepare("SELECT * FROM tasks WHERE executeAt <= :currentTime AND status = 'pending'");

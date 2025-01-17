@@ -3,8 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\TaskRepository;
-use App\Service\TaskDataService;
-use App\Utils\ExecuteTimeOperands;
+use App\Utils\CommandOperands;
 use App\Utils\InputSanitizer;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -15,16 +14,13 @@ use App\Model\Task;
 class TaskController
 {
     private TaskRepository $repository;
-    private TaskDataService $service;
     private Environment $twig;
 
     public function __construct(
         TaskRepository $repository,
-        TaskDataService $service,
         Environment|null $twig)
     {
         $this->repository = $repository;
-        $this->service = $service;
         $this->twig = $twig;
     }
 
@@ -61,7 +57,7 @@ class TaskController
                            String $executeAt): void
     {
         try {
-            $command = $this->service->validateCommand($command);
+            $command = CommandOperands::validateCommand($command);
             $task = new Task(
                 $command,
                 InputSanitizer::cleanString($description),
@@ -77,9 +73,15 @@ class TaskController
         }
     }
 
-    public function editTime(mixed $id, mixed $executeAt): void
+    public function editTime(int $id, string $executeAt): void
     {
-        // ToDo
+        try {
+            $task = $this->repository->findTaskById($id);
+            $task->setExecuteAt($executeAt);
+            $this->repository->editTime($id, $task);
+        } catch (\InvalidArgumentException $e) {
+            echo "Error: " . $e->getMessage() . "\n";
+        }
     }
 
     public function delete(mixed $id): void
