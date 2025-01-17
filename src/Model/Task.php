@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Service\TaskDataService;
+use App\Utils\ExecuteTimeOperands;
 use App\Utils\InputSanitizer;
 use RuntimeException;
 
@@ -62,10 +63,13 @@ class Task
     }
 
     public function getExecuteAt(): string {
-        return $this->taskDataService->convertTimeToString($this->executeAt);
+        return $this->executeAt;
     }
     public function setExecuteAt(string $executeAt): void {
-        $executeAt = $this->taskDataService->validateTime($executeAt);
-        $this->executeAt = $this->taskDataService->convertStringToTime($executeAt);
+        $this->executeAt = ExecuteTimeOperands::validateTime(InputSanitizer::cleanString($executeAt));
+    }
+
+    public function getExecuteAtCron(): string {
+        return ExecuteTimeOperands::convertDatetimeToCronFormat($this->executeAt);
     }
 }

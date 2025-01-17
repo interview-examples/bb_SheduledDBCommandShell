@@ -5,17 +5,28 @@ namespace App\Utils;
 class ExecuteTimeOperands
 {
     public static function validateTime(string $executeAt): string {
-        // Логика валидации времени
-        return $executeAt;
+        try {
+            $dateTime = Carbon::parse($executeAt);
+            if (!$dateTime || $dateTime->isFalse()) {
+                throw new InvalidArgumentException("Invalid date/time format: $executeAt");
+            }
+            return $dateTime->format('Y-m-d H:i:s');
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException("Invalid date/time format: $executeAt");
+        }
     }
 
-    public static function convertStringToTime(string $executeAt): string {
-        // Логика конвертации строки во время
-        return $executeAt;
-    }
-
-    public static function convertTimeToString(string $executeAt): string {
-        // Логика конвертации времени в строку
-        return $executeAt;
+    public static function convertDatetimeToCronFormat(string $executeAt): string {
+        try {
+            $dateTime = Carbon::parse($executeAt);
+            return sprintf('%d %d %d %d *',
+                $dateTime->minute,
+                $dateTime->hour,
+                $dateTime->day,
+                $dateTime->month
+            );
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException("Invalid date/time format for cron: $executeAt");
+        }
     }
 }
