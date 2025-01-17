@@ -1,0 +1,31 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../config/entrypoint.php';
+
+$router->addRoute('list', function() use ($taskController) {
+    $page = $_SERVER['argv'][2] ?? 1;
+    $taskController->list((int)$page);
+});
+$router->addRoute('create', function() use ($taskController) {
+    $command = $_SERVER['argv'][2] ?? 'default command';
+    $description = $_SERVER['argv'][3] ?? 'default description';
+    $executeAt = $_SERVER['argv'][4] ?? date('Y-m-d H:i:s');
+    $taskController->create($command, $description, $executeAt);
+});
+$router->addRoute('edit', function() use ($taskController) {
+    $id = $_SERVER['argv'][2] ?? 'default command';
+    $executeAt = $_SERVER['argv'][4] ?? date('Y-m-d H:i:s');
+    $taskController->editTime($id, $executeAt);
+});
+$router->addRoute('delete', function() use ($taskController) {
+    $id = $_SERVER['argv'][2] ?? 'default command';
+    $taskController->delete($id);
+});
+$router->addRoute('clear', function() use ($taskController) {
+    $taskController->deleteAll();
+});
+
+$action = $_SERVER['argv'][1] ?? 'list';
+
+$router->dispatch($action, '');

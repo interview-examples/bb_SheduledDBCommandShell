@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tasks</title>
+</head>
+<body>
+    <h1>Tasks</h1>
+    <ul>
+        {% for task in tasks %}
+            <li>{{ task.getDescription() }} - {{ task.getExecuteAt() }}</li>
+        {% endfor %}
+    </ul>
+
+    <div class="pagination">
+        {% if currentPage > 1 %}
+            <a href="?action=list&page={{ currentPage - 1 }}">Previous</a>
+        {% endif %}
+
+        {% for i in 1..totalPages %}
+            {% if i == currentPage %}
+                <strong>{{ i }}</strong>
+            {% else %}
+                <a href="?action=list&page={{ i }}">{{ i }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if currentPage < totalPages %}
+            <a href="?action=list&page={{ currentPage + 1 }}">Next</a>
+        {% endif %}
+    </div>
+</body>
+</html>
