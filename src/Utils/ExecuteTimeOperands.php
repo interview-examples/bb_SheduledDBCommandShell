@@ -8,9 +8,18 @@ class ExecuteTimeOperands
 {
     public static function validateTime(string $executeAt): string {
         try {
-            $dateTime = Carbon::parse($executeAt);
+            if (preg_match('/^\+(\d+h)?(\d+m)?(\d+s)?$/', $executeAt)) {
+                $dateTime = Carbon::now();
+                $interval = self::parseInterval($executeAt);
+                $dateTime->add($interval);
+            } else {
+                $dateTime = Carbon::parse($executeAt);
+            }
             if (!$dateTime || $dateTime->isFalse()) {
                 throw new InvalidArgumentException("Invalid date/time format: $executeAt");
+            }
+            if ($dateTime->isPast()) {
+                throw new InvalidArgumentException("Date/time cannot be in the past: $executeAt");
             }
             return $dateTime->format('Y-m-d H:i:s');
         } catch (\Exception $e) {
