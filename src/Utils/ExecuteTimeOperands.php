@@ -56,7 +56,7 @@ class ExecuteTimeOperands
             'm' => 0,
             's' => 0,
         ];
-        if (preg_match_all('/(\d+)(h|m|s)/', $intervalString, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all('/(\d+)([hms])/', $intervalString, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $parts[$match[2]] = (int)$match[1];
             }
