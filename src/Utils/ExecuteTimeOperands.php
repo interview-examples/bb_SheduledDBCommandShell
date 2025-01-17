@@ -3,7 +3,7 @@
 namespace App\Utils;
 
 use Carbon\Carbon;
-use \InvalidArgumentException;
+use InvalidArgumentException;
 
 class ExecuteTimeOperands
 {
