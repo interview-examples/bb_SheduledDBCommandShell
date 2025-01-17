@@ -2,6 +2,8 @@
 
 namespace App\Framework;
 
+use App\Utils\InputSanitizer;
+
 class Router
 {
     private array $routes = [];
@@ -24,6 +26,6 @@ class Router
         }
 
         http_response_code(404);
-        echo "404 Not Found";
+        echo "404: '" . InputSanitizer::cleanString($path) . "' not found";
     }
 }

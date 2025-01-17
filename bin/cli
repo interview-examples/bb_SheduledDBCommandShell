@@ -3,29 +3,29 @@
 
 require __DIR__ . '/../config/entrypoint.php';
 
-$router->addRoute('list', function() use ($taskController) {
+$router->addRoute('CLI','tasks:list', function() use ($taskController) {
     $page = $_SERVER['argv'][2] ?? 1;
     $taskController->list((int)$page);
 });
-$router->addRoute('create', function() use ($taskController) {
-    $command = $_SERVER['argv'][2] ?? 'default command';
-    $description = $_SERVER['argv'][3] ?? 'default description';
-    $executeAt = $_SERVER['argv'][4] ?? date('Y-m-d H:i:s');
+$router->addRoute('CLI', 'task:add', function() use ($taskController) {
+    $command = $_SERVER['argv'][2] ?? 'No command';
+    $description = $_SERVER['argv'][3] ?? '';
+    $executeAt = $_SERVER['argv'][4] ?? Carbon::now()->addMinute()->format('Y-m-d H:i:s');
     $taskController->create($command, $description, $executeAt);
 });
-$router->addRoute('edit', function() use ($taskController) {
-    $id = $_SERVER['argv'][2] ?? 'default command';
-    $executeAt = $_SERVER['argv'][4] ?? date('Y-m-d H:i:s');
+$router->addRoute('CLI', 'task:edit', function() use ($taskController) {
+    $id = $_SERVER['argv'][2] ?? -1;
+    $executeAt = $_SERVER['argv'][3] ?? Carbon::now()->addMinute()->format('Y-m-d H:i:s');
     $taskController->editTime($id, $executeAt);
 });
-$router->addRoute('delete', function() use ($taskController) {
-    $id = $_SERVER['argv'][2] ?? 'default command';
+$router->addRoute('CLI', 'task:delete', function() use ($taskController) {
+    $id = $_SERVER['argv'][2] ?? -1;
     $taskController->delete($id);
 });
-$router->addRoute('clear', function() use ($taskController) {
+$router->addRoute('CLI', 'tasks:removeAll', function() use ($taskController) {
     $taskController->deleteAll();
 });
 
-$action = $_SERVER['argv'][1] ?? 'list';
+$action = $_SERVER['argv'][1] ?? 'tasks:list';
 
-$router->dispatch($action, '');
+$router->dispatch('CLI', $action);

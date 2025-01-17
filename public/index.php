@@ -12,16 +12,16 @@ $router->addRoute('GET', '/list', function() use ($taskController) {
 $router->addRoute('POST', '/create', function() use ($taskController) {
     $command = $_POST['command'];
     $description = $_POST['description'];
-    $executeAt = $_POST['executeAt'];
+    $executeAt = $_POST['executeAt'] ?? Carbon::now()->addMinute()->format('Y-m-d H:i:s');
     $taskController->create($command, $description, $executeAt);
 });
 $router->addRoute('POST', '/edit', function() use ($taskController) {
-    $task_id = $_POST['id'];
-    $new_executed = $_POST['executeAt'];
+    $task_id = $_POST['id'] ?? -1;
+    $new_executed = $_POST['executeAt'] ?? Carbon::now()->addMinute()->format('Y-m-d H:i:s');
     $taskController->editTime((int)$task_id, $new_executed);
 });
 $router->addRoute('POST', '/delete', function() use ($taskController) {
-    $task_id = $_POST['id'];
+    $task_id = $_POST['id'] ?? -1;
     $taskController->delete((int)$task_id);
 });
 $router->addRoute('GET', '/clear', function() use ($taskController) {
