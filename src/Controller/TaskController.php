@@ -84,9 +84,13 @@ class TaskController
         }
     }
 
-    public function delete(mixed $id): void
+    public function delete(int $id): void
     {
-        // ToDo
+        try {
+            $this->repository->deleteTask($id);
+        } catch (\InvalidArgumentException $e) {
+            echo "Error: " . $e->getMessage() . "\n";
+        }
     }
 
     public function deleteAll(): void
