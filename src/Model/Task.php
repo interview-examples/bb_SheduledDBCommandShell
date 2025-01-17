@@ -23,7 +23,7 @@ class Task
     {
         $this->taskDataService = $taskDataService;
         $this->setCommand($command);
-        $this->description = $this->setDescription($description);
+        $this->setDescription($description);
         $this->setExecuteAt($executeAt);
     }
 

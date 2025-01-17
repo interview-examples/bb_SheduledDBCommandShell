@@ -11,6 +11,8 @@
     "nesbot/carbon": "^3.8"
   },
   "require-dev": {
+    "roave/security-advisories": "dev-latest"
+    ,
     "phpunit/phpunit": "^9.5"
   }
 }
