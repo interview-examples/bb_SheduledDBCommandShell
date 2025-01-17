@@ -40,4 +40,30 @@ class ExecuteTimeOperands
             throw new InvalidArgumentException("Invalid date/time format for cron: $executeAt");
         }
     }
+
+    /**
+     * Разбирает строку интервала и возвращает CarbonInterval.
+     *
+     * @param string $intervalString Входная строка интервала (например, "+1h23m")
+     * @return \DateInterval
+     * @throws InvalidArgumentException Если формат неверный
+     */
+    private static function parseInterval(string $intervalString): \DateInterval
+    {
+        $intervalString = ltrim($intervalString, '+');
+        $parts = [
+            'h' => 0,
+            'm' => 0,
+            's' => 0,
+        ];
+        if (preg_match_all('/(\d+)(h|m|s)/', $intervalString, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $parts[$match[2]] = (int)$match[1];
+            }
+        } else {
+            throw new InvalidArgumentException("Invalid interval format: $intervalString");
+        }
+
+        return new \DateInterval(sprintf('PT%dH%dM%dS', $parts['h'], $parts['m'], $parts['s']));
+    }
 }
