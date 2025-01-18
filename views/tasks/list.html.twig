@@ -3,29 +3,81 @@
 <head>
     <meta charset="utf-8">
     <title>Tasks</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 18px;
+            text-align: left;
+        }
+        table thead th {
+            background-color: #444;
+            color: white;
+            padding: 10px;
+            border: 1px solid #444;
+        }
+        table tbody tr:nth-child(odd) {
+            background-color: #ccc;
+        }
+        table tbody tr:nth-child(even) {
+            background-color: #aaa;
+        }
+        table tbody td {
+            padding: 10px;
+            border: 1px solid #666;
+        }
+        table tbody td:not(:last-child) {
+            border-right: 1px solid #444;
+        }
+    </style>
 </head>
 <body>
     <h1>Tasks</h1>
-    <ul>
+    <table>
+        <caption>List of Tasks</caption>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Command</th>
+                <th>Description</th>
+                <th>Execute At</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for task in tasks %}
-            <li>{{ task.getCommand() }} - {{ task.getDescription() }} - {{ task.getExecuteAt() }} - {{ task.getStatus() }}</li>
+            <tr>
+                <td>{{ task.getId() }}</td>
+                <td>{{ task.getCommand() }}</td>
+                <td>{{ task.getDescription() }}</td>
+                <td>{{ task.getExecuteAt() }}</td>
+                <td{% if task.getStatus() == 'error' %} style="color: red;" {% elseif task.getStatus() == 'executed' %} style="color: green;" %} {% endif %}>{{ task.getStatus() }}</td>
+            </tr>
         {% endfor %}
-    </ul>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5">Total tasks: {{ totalTasks }}</td>
+            </tr>
+        </tfoot>
+    </table>
 
     <div class="pagination">
         {% if currentPage > 1 %}
             <a href="?action=list&page={{ currentPage - 1 }}">Previous</a>
         {% endif %}
 
+        <strong>Page(-s): </strong>
         {% for i in 1..totalPages %}
-            {% if i == currentPage %}
+            {% if i == currentPage + 1 %}
                 <strong>{{ i }}</strong>
             {% else %}
                 <a href="?action=list&page={{ i }}">{{ i }}</a>
             {% endif %}
         {% endfor %}
 
-        {% if currentPage < totalPages %}
+        {% if currentPage < totalPages and totalPages != 1 %}
             <a href="?action=list&page={{ currentPage + 1 }}">Next</a>
         {% endif %}
     </div>

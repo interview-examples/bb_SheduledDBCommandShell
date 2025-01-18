@@ -58,6 +58,7 @@ class TaskController
         if ($totalTasks > 0) {
             $this->twig->display('tasks/list.html.twig', [
                 'tasks' => $tasks,
+                'totalTasks' => $totalTasks,
                 'currentPage' => $page,
                 'totalPages' => ceil($totalTasks / $tasksPerPage),
             ]);
@@ -81,7 +82,7 @@ class TaskController
                     $task->getCommand(),
                     $task->getDescription(),
                     $task->getExecuteAt(),
-                    $this->colorStatus($task->getStatus())
+                    $this->cliColorStatus($task->getStatus())
                 );
             }
 
@@ -91,13 +92,13 @@ class TaskController
         }
     }
 
-    private function colorStatus(string $status): string
+    private function cliColorStatus(string $status): string
     {
         switch ($status) {
             case 'executed':
-                return "\033[32m" . str_pad($status, 7) . "\033[0m"; // Зеленый цвет
+                return "\033[32m" . str_pad($status, 7) . "\033[0m";
             case 'error':
-                return "\033[31m" . str_pad($status, 7) . "\033[0m"; // Красный цвет
+                return "\033[31m" . str_pad($status, 7) . "\033[0m";
             default:
                 return str_pad($status, 7);
         }
