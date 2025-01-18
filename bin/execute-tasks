@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+
+pcntl_signal(SIGQUIT, function () {
+    echo "Received SIGQUIT, cleaning up...\n";
+    exit(0);
+});
+
+$i = 0;
+while(true) {
+    try {
+        echo "Execute Tasks at " . date('l jS \of F Y h:i:s A') . "\n";
+        echo "Step " . ++$i . "\n";
+        sleep(10);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage() . "\n";
+        exit($e->getCode());
+    }
+}
+
+exit(0);

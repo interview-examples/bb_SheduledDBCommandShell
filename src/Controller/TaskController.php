@@ -62,8 +62,7 @@ class TaskController
                 $command,
                 InputSanitizer::cleanString($description),
                 $executeAt,
-                'new',
-                $this->service
+                'new'
             );
             $this->repository->addTask($task);
             $task->setStatus('created');

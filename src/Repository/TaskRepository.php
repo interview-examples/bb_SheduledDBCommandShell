@@ -84,7 +84,15 @@ VALUES (:command, :description, :executeAt, :status)");
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_CLASS, Task::class);
+        $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = [];
+        foreach ($tasks as $task) {
+            $objTask = new Task($task['command'], $task['description'], $task['executeAt'], $task['status']);
+            $objTask->setId($task['id']);
+            $result[] = $objTask;
+        }
+
+        return $result;
     }
 
     public function countAllTasks(): int

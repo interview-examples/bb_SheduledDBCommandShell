@@ -36,7 +36,8 @@ class Task
     public function setId(int $id): void {
         $backtrace = debug_backtrace();
         $allowedCallers = [
-            'App\Repository\TaskRepository::create',
+            'App\Repository\TaskRepository::addTask',
+            'App\Repository\TaskRepository::findTasksPaginated',
         ];
 
         $caller = $backtrace[1]['class'] . '::' . $backtrace[1]['function'];
@@ -74,6 +75,7 @@ class Task
 
     public function setStatus(string $status): void
     {
+        $this->status = $status;
     }
 
     public function getStatus(): string {
