@@ -4,6 +4,7 @@ namespace App\Strategy;
 
 use App\Model\Task;
 use App\Repository\TaskRepository;
+use InvalidArgumentException;
 
 class TaskStrategy implements TaskStrategyInterface
 {
@@ -26,7 +27,7 @@ class TaskStrategy implements TaskStrategyInterface
                 echo $task->getDescription() . "\n";
                 break;
             default:
-                throw new \InvalidArgumentException("Unknown command: " . $task->getCommand());
+                throw new InvalidArgumentException("Unknown command: " . $task->getCommand());
         }
     }
 }

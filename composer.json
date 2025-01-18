@@ -8,7 +8,8 @@
     "php": "^8.3",
     "ext-pdo": "*",
     "twig/twig": "^3.0",
-    "nesbot/carbon": "^3.8"
+    "nesbot/carbon": "^3.8",
+    "ext-pcntl": "*"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
