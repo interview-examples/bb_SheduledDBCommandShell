@@ -140,4 +140,4 @@ This task manager project provides a simple and efficient way to manage tasks us
 
 **Tests**
 
-The project includes **_unit tests_** (***_vendor/bin/phpunit --testdox tests/Unit/TaskRepositoryTest.php_***) and **_feature tests_** (***_vendor/bin/phpunit --testdox tests/Feature/TaskControllerTest.php_***). To run the tests, please run the **_composer test_** command.
+The project includes **_unit tests_** (***_vendor/bin/phpunit --testdox tests/Unit/TaskRepositoryTest.php_***) and **_feature tests_** (***_vendor/bin/phpunit --testdox tests/Feature/TaskControllerTest.php_***). 
