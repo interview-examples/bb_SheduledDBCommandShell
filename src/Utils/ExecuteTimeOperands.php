@@ -30,9 +30,9 @@ class ExecuteTimeOperands
             if (is_null($dateTime)) {
                 throw new InvalidArgumentException("Invalid date/time format: $executeAt");
             }
-            if ($dateTime->isPast()) {
+/*            if ($dateTime->isPast()) {
                 throw new InvalidArgumentException("Date/time cannot be in the past: $executeAt");
-            }
+            }*/
 
             return $dateTime->format('Y-m-d H:i:s');
         } catch (\Exception $e) {

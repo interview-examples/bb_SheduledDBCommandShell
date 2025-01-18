@@ -30,9 +30,9 @@ VALUES (:command, :description, :executeAt, :status)");
 
     public function findTaskById(int $id): Task
     {
-        $row = $this->pdo->prepare("SELECT * FROM tasks WHERE id = :id");
-        $row->execute(['id' => $id]);
-        $task = $row->fetch();
+        $stmt = $this->pdo->prepare("SELECT * FROM tasks WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        $task = $stmt->fetch();
         return new Task($task['command'], $task['description'], $task['executeAt'], $task['status']);
     }
 
@@ -47,12 +47,14 @@ VALUES (:command, :description, :executeAt, :status)");
         return $task;
     }
 
-    public function findTasksToExecute(string $currentTime): array
+    public function findTasksToExecute(string $startTime, string $endTime): array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM tasks WHERE executeAt <= :currentTime AND status = 'pending'");
-        $stmt->execute(['currentTime' => $currentTime]);
+        $stmt = $this->pdo->prepare("SELECT * FROM tasks WHERE (executeAt BETWEEN :startTime AND :endTime) AND status = 'pending'");
+        $stmt->execute(['startTime' => $startTime, 'endTime' => $endTime]);
 
-        return $stmt->fetchAll(PDO::FETCH_CLASS, Task::class);
+        return $this->fetchResultToTasksObject(
+            $stmt->fetchAll(PDO::FETCH_ASSOC)
+        );
     }
 
     public function updateTaskStatus(int $taskId, string $status): void
@@ -74,7 +76,9 @@ VALUES (:command, :description, :executeAt, :status)");
 
     public function findAllTasks(): array
     {
-        return $this->pdo->query("SELECT * FROM tasks ORDER BY executeAt ASC")->fetchAll(PDO::FETCH_CLASS, Task::class);
+        return $this->fetchResultToTasksObject(
+            $this->pdo->query("SELECT * FROM tasks ORDER BY executeAt ASC")->fetchAll(PDO::FETCH_ASSOC)
+        );
     }
 
     public function findTasksPaginated(int $limit, float|int $offset): array
@@ -84,15 +88,7 @@ VALUES (:command, :description, :executeAt, :status)");
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $result = [];
-        foreach ($tasks as $task) {
-            $objTask = new Task($task['command'], $task['description'], $task['executeAt'], $task['status']);
-            $objTask->setId($task['id']);
-            $result[] = $objTask;
-        }
-
-        return $result;
+        return $this->fetchResultToTasksObject($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     public function countAllTasks(): int
@@ -105,5 +101,15 @@ VALUES (:command, :description, :executeAt, :status)");
     public function removeAllTasks()
     {
         $stmt = $this->pdo->query("DELETE FROM tasks");
+    }
+
+    private function fetchResultToTasksObject(array $queryResult): array {
+        $tasks = [];
+        foreach ($queryResult as $task) {
+            $objTask = new Task($task['command'], $task['description'], $task['executeAt'], $task['status']);
+            $objTask->setId($task['id']);
+            $tasks[] = $objTask;
+        }
+        return $tasks;
     }
 }

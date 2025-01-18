@@ -6,16 +6,45 @@ pcntl_signal(SIGQUIT, function () {
     exit(0);
 });
 
-$i = 0;
+require __DIR__ . '/../config/entrypoint.php';
+
+use App\Observer\TaskObserver;
+use App\Observer\TaskSubject;
+use App\Strategy\TaskStrategy;
+use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
+
+$taskExecutionStrategy = new TaskStrategy($taskRepository);
+$taskObserver = new TaskObserver($taskRepository, $taskExecutionStrategy);
+
+$taskSubject = new TaskSubject();
+$taskSubject->attach($taskObserver);
+
+const RANGE_IN_SECONDS = 9;
+
+try {
+    $timezone = new CarbonTimeZone(2);
+} catch (DateInvalidTimeZoneException $e) {
+    echo "Error: " . $e->getMessage() . "\n";
+    exit(1);
+}
+
 while(true) {
     try {
-        echo "Execute Tasks at " . date('l jS \of F Y h:i:s A') . "\n";
-        echo "Step " . ++$i . "\n";
-        sleep(10);
-    } catch (Exception $e) {
+        $currentTime = Carbon::now($timezone);
+        $startTime = $currentTime->copy()->subSeconds(RANGE_IN_SECONDS)->toDateTimeString();
+        $endTime = $currentTime->copy()->addSeconds(RANGE_IN_SECONDS)->toDateTimeString();
+    } catch (RuntimeException $e) {
         echo "Error: " . $e->getMessage() . "\n";
-        exit($e->getCode());
+        exit(1);
     }
+    $tasks = $taskRepository->findTasksToExecute($startTime, $endTime);
+
+    foreach ($tasks as $task) {
+        $taskSubject->notify($task);
+    }
+
+    sleep(5);
 }
 
 exit(0);

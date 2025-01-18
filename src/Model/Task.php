@@ -38,6 +38,7 @@ class Task
         $allowedCallers = [
             'App\Repository\TaskRepository::addTask',
             'App\Repository\TaskRepository::findTasksPaginated',
+            'App\Repository\TaskRepository::fetchResultToTasksObject',
         ];
 
         $caller = $backtrace[1]['class'] . '::' . $backtrace[1]['function'];
