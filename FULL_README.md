@@ -1,11 +1,11 @@
-***Project: Shedulled DBCommand Shell.***
+***Project: Shedulled DBCommand Shell.*** 
 *Documentation*
 
 **Introduction**
 
 This project is application that can take commands, such as "Write to DB in 15 minutes"
-and it will execute said command at exactly that time. Commands can be received via command-line interface (CLI) or via some frontend.
-The project written in PHP 8.3, using Composer, PDO, TWIG, CARBON. As a database used MySQL (MarioDB).
+and it will execute said command at exactly that time. Commands can be received via command-line interface (CLI) or via some frontend. 
+The project written in PHP 8.3, using Composer, PDO, TWIG, CARBON. As a database used MySQL (MarioDB). 
 
 **Installation**
 
@@ -16,7 +16,7 @@ To install the project, please follow these steps:
 3. Install **_Composer_** and run the **_composer install_** command to install the project dependencies.
 4. Install supervisor to run the project as a service (**_sudo supervisorctl start tasks_***). Settings can be found in the **_supervisor configuration file_** (***_/bin/tasks.conf_*** and should be placed to the **_supervisor config directory_**).
 5. Run the project and manage your task list.
-6.
+6. 
 
 **Usage command-line interface (CLI)**
 
