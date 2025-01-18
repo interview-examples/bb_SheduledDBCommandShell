@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Repository\TaskRepository;
 use App\Utils\CommandOperands;
 use App\Utils\InputSanitizer;
+use http\Env\Request;
+use http\Exception\InvalidArgumentException;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -46,6 +48,40 @@ class TaskController
         } else {
             $this->renderWeb($tasks, $page, $totalTasks, $tasksPerPage);
         }
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    public function taskAction(): void
+    {
+        $action = $_POST['action'];
+        switch ($action) {
+            case 'create':
+                $command = $_POST['command'] ?? '';
+                $description = $_POST['description'] ?? '';
+                $executeAt = $_POST['executeAt'] ?? '';
+                $this->create($command, $description, $executeAt);
+                break;
+            case 'edit':
+                $taskId = $_POST['taskId'] ?? '-1';
+                $executeAt = $_POST['executeAt'] ?? '';
+                $this->editTime((int)$taskId, $executeAt);
+                break;
+            case 'delete':
+                $taskId = $_POST['taskId'] ?? '-1';
+                $this->delete((int)$taskId);
+                break;
+            case 'deleteAll':
+                $this->removeAll();
+                break;
+            default:
+                throw new InvalidArgumentException("Unknown action: $action");
+        }
+        header('Location: /');
+        exit;
     }
 
     /**

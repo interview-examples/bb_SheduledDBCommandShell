@@ -1,0 +1,19 @@
+<div class="form-container">
+    {#<form id="taskForm" method="post" action="?action=taskAction">#}
+    <form id="taskForm" method="post">
+        <input type="hidden" id="taskId" name="taskId">
+        <input type="hidden" id="action" name="action" value="create">
+
+        <div>
+            <h2 id="formTitle">Create Task</h2>
+            <label for="command">Command:</label>
+            <input type="text" id="command" name="command" required><br>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required><br>
+            <label for="executeAt">Execute At:</label>
+            <input type="datetime-local" id="executeAt" name="executeAt" required><br>
+            <button type="submit">Submit</button>
+            <button type="button" onclick="resetForm()">Reset</button>
+        </div>
+    </form>
+</div>

@@ -5,8 +5,11 @@ require __DIR__ . '/../config/entrypoint.php';
 $router->addRoute('GET', '/', function() use ($taskController) {
     $taskController->list();
 });
+$router->addRoute('POST', '/', function() use ($taskController) {
+    $taskController->taskAction();
+});
 $router->addRoute('GET', '/list', function() use ($taskController) {
-    $page = $_GET['page'] ?? 1; // FixMe: Resolved operands types are not complimentary, while they should be ([string, array] vs [int])
+    $page = $_GET['page'] ?? '1';
     $taskController->list((int)$page);
 });
 $router->addRoute('POST', '/create', function() use ($taskController) {

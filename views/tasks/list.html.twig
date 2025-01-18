@@ -3,37 +3,17 @@
 <head>
     <meta charset="utf-8">
     <title>Tasks</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 18px;
-            text-align: left;
-        }
-        table thead th {
-            background-color: #444;
-            color: white;
-            padding: 10px;
-            border: 1px solid #444;
-        }
-        table tbody tr:nth-child(odd) {
-            background-color: #ccc;
-        }
-        table tbody tr:nth-child(even) {
-            background-color: #aaa;
-        }
-        table tbody td {
-            padding: 10px;
-            border: 1px solid #666;
-        }
-        table tbody td:not(:last-child) {
-            border-right: 1px solid #444;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/task-form.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/task-form.js"></script>
 </head>
 <body>
     <h1>Tasks</h1>
+
+    {% include 'tasks/task_form.html.twig' %}
+
+    <button onclick="deleteAllTasks()">Delete All Tasks</button>
+
     <table>
         <caption>List of Tasks</caption>
         <thead>
@@ -43,6 +23,7 @@
                 <th>Description</th>
                 <th>Execute At</th>
                 <th>Status</th>
+                <th class="actions">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -53,12 +34,20 @@
                 <td>{{ task.getDescription() }}</td>
                 <td>{{ task.getExecuteAt() }}</td>
                 <td{% if task.getStatus() == 'error' %} style="color: red;" {% elseif task.getStatus() == 'executed' %} style="color: green;" %} {% endif %}>{{ task.getStatus() }}</td>
+                <td class="actions">
+                    {% if task.getStatus() == 'pending' %}
+                        <button onclick="editTask('{{ task.getId() }}', '{{ task.getCommand() }}', '{{ task.getDescription() }}', '{{ task.getExecuteAt() }}')">Edit</button>
+                    {% endif %}
+                    {% if task.getStatus() == 'pending' or task.getStatus() == 'error' %}
+                        <button onclick="deleteTask('{{ task.getId() }}')">Delete</button>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="5">Total tasks: {{ totalTasks }}</td>
+                <td colspan="6">Total tasks: {{ totalTasks }}</td>
             </tr>
         </tfoot>
     </table>
