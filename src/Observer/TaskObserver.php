@@ -19,22 +19,6 @@ class TaskObserver implements TaskObserverInterface
         $this->taskStrategy = $executionStrategy;
     }
 
-    /**
-     * @throws \DateInvalidTimeZoneException
-     */
-/*    public function checkAndExecuteTasks(): void
-    {
-        $timezone = new CarbonTimeZone(2);
-        $timezone->toRegionTimeZone();
-
-        $currentTime = Carbon::now();
-        $tasks = $this->taskRepository->findTasksToExecute($currentTime->toDateTimeString());
-
-        foreach ($tasks as $task) {
-            $this->update($task);
-        }
-    }*/
-
     public function update(Task $task): void
     {
         try {

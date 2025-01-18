@@ -18,6 +18,12 @@ class TaskController
     private TaskRepository $repository;
     private Environment $twig;
 
+    /**
+     * TaskController constructor.
+     *
+     * @param TaskRepository $repository
+     * @param Environment|null $twig
+     */
     public function __construct(
         TaskRepository $repository,
         Environment|null $twig)
@@ -27,6 +33,10 @@ class TaskController
     }
 
     /**
+     * Preparing tasks to output by web or cli
+     *
+     * @param int $page
+     *
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -51,6 +61,8 @@ class TaskController
     }
 
     /**
+     * Performs task actions (POST-request via web interface)
+     *
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -85,11 +97,22 @@ class TaskController
     }
 
     /**
+     * Output to web interface (using TWIG)
+     *
+     * @param array $tasks
+     * @param int $page
+     * @param int $totalTasks
+     * @param int $tasksPerPage
+     *
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
      */
-    private function renderWeb($tasks, $page, $totalTasks, $tasksPerPage): void
+    private function renderWeb(
+        array $tasks,
+        int $page,
+        int $totalTasks,
+        int $tasksPerPage): void
     {
         if ($totalTasks > 0) {
             $this->twig->display('tasks/list.html.twig', [
@@ -103,7 +126,19 @@ class TaskController
         }
     }
 
-    private function renderCli($tasks, $page, $totalTasks, $tasksPerPage): void
+    /**
+     * Output to web interface (using TWIG)
+     *
+     * @param array $tasks
+     * @param int $page
+     * @param int $totalTasks
+     * @param int $tasksPerPage
+     */
+    private function renderCli(
+        array $tasks,
+        int $page,
+        int $totalTasks,
+        int $tasksPerPage): void
     {
         if ($totalTasks > 0) {
             echo "Tasks (Page $page of " . ceil($totalTasks / $tasksPerPage) . "):\n\n";
@@ -130,16 +165,20 @@ class TaskController
 
     private function cliColorStatus(string $status): string
     {
-        switch ($status) {
-            case 'executed':
-                return "\033[32m" . str_pad($status, 7) . "\033[0m";
-            case 'error':
-                return "\033[31m" . str_pad($status, 7) . "\033[0m";
-            default:
-                return str_pad($status, 7);
-        }
+        return match ($status) {
+            'executed' => "\033[32m" . str_pad($status, 7) . "\033[0m",
+            'error' => "\033[31m" . str_pad($status, 7) . "\033[0m",
+            default => str_pad($status, 7),
+        };
     }
 
+    /**
+     * Create a new task and add it to the database.
+     *
+     * @param string $command Command of the task. Possible values are "Write to DB", "Send email", "Out to screen" (case non-sensitive).
+     * @param string $description Description of the task.
+     * @param string $executeAt Date and time when the task should be executed. The format is "YYYY-MM-DD HH:MM:SS" or "+15m" or "HH:MM" etc.
+     */
     public function create(String $command,
                            String $description,
                            String $executeAt): void
@@ -160,6 +199,14 @@ class TaskController
         }
     }
 
+    /**
+     * Edit the execute time of an existing task in the database.
+     *
+     * @param int $id The ID of the task to edit.
+     * @param string $executeAt The new date and time when the task should be executed. The format is "YYYY-MM-DD HH:MM:SS" or "+15m" or "HH:MM" etc.
+     *
+     * @throws \InvalidArgumentException If the task with the given ID does not exist.
+     */
     public function editTime(int $id, string $executeAt): void
     {
         try {
@@ -171,6 +218,13 @@ class TaskController
         }
     }
 
+    /**
+     * Deletes a task from the database.
+     *
+     * @param int $id The ID of the task to delete.
+     *
+     * @throws \InvalidArgumentException If the task with the given ID does not exist.
+     */
     public function delete(int $id): void
     {
         try {
@@ -180,6 +234,11 @@ class TaskController
         }
     }
 
+    /**
+     * Removes all tasks from the database.
+     *
+     * If an error occurs during the deletion of tasks, an error message is output.
+     */
     public function removeAll(): void
     {
         try {

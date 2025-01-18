@@ -16,7 +16,7 @@ class TaskRepositoryTest extends TestCase
     protected function setUp(): void
     {
         $this->pdo = $this->createMock(PDO::class);
-        $this->repository = new TaskRepository($this->pdo);
+        $this->repository = new TaskRepository($this->pdo, 'Asia/Jerusalem');
     }
 
     public function testCreateTask()

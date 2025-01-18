@@ -4,24 +4,34 @@ namespace App\Utils;
 
 use Carbon\Carbon;
 use Carbon\CarbonTimeZone;
+use DateInterval;
+use Exception;
 use InvalidArgumentException;
 
 class ExecuteTimeOperands
 {
+
     /**
-     * Проверяет и конвертирует строку в формат DATETIME.
+     * Validates a given string as a valid date and time in the future.
      *
-     * @param string $executeAt Входная строка
-     * @return string Конвертированная строка в формате DATETIME
-     * @throws InvalidArgumentException Если формат неверный
+     * The given string can be in the following formats:
+     * - "YYYY-MM-DD HH:MM:SS"
+     * - "+15m", "+1h", "+1h30m", "+1h30m15s"
+     *
+     * If the given string is not a valid date and time, an exception is thrown.
+     *
+     * @param string $executeAt The string to validate.
+     * @return string The validated date and time in the format "YYYY-MM-DD HH:MM:SS".
+     * @throws InvalidArgumentException If the given string is not a valid date and time.
      */
     public static function validateTime(string $executeAt): string {
+        global $config;
         try {
-            $timezone = new CarbonTimeZone(2);
+            $timezone = new CarbonTimeZone('Asia/Jerusalem');
             $timezone->toRegionTimeZone();
             if (preg_match('/^\+(\d+h)?(\d+m)?(\d+s)?$/', $executeAt)) {
                 $dateTime = Carbon::now();
-                $dateTime->setTimezone('Asia/Jerusalem');   // Note: Bad practise to hardcode timezone
+                $dateTime->setTimezone('Asia/Jerusalem');
                 $interval = self::parseInterval($executeAt);
                 $dateTime->add($interval);
             } else {
@@ -30,16 +40,22 @@ class ExecuteTimeOperands
             if (is_null($dateTime)) {
                 throw new InvalidArgumentException("Invalid date/time format: $executeAt");
             }
-/*            if ($dateTime->isPast()) {
-                throw new InvalidArgumentException("Date/time cannot be in the past: $executeAt");
-            }*/
 
             return $dateTime->format('Y-m-d H:i:s');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new InvalidArgumentException("Invalid date/time format: $executeAt");
         }
     }
 
+    /**
+     * Converts a given date and time string to a cron format.
+     *
+     * The given string must be in the format "YYYY-MM-DD HH:MM:SS".
+     *
+     * @param string $executeAt The date and time string to convert.
+     * @return string The converted cron format string.
+     * @throws InvalidArgumentException If the given string is not a valid date and time.
+     */
     public static function convertDatetimeToCronFormat(string $executeAt): string {
         try {
             $dateTime = Carbon::parse($executeAt);
@@ -49,20 +65,21 @@ class ExecuteTimeOperands
                 $dateTime->day,
                 $dateTime->month
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new InvalidArgumentException("Invalid date/time format for cron: $executeAt");
         }
     }
 
     /**
-     * Разбирает строку интервала и возвращает CarbonInterval.
+     * Parse an interval string given as "+XdYmZs" where X, Y, and Z are integers and
+     * d, m, and s are days, months, and seconds respectively.
      *
-     * @param string $intervalString Входная строка интервала (например, "+1h23m")
-     * @return \DateInterval
-     * @throws InvalidArgumentException Если формат неверный
+     * @param string $intervalString The interval string to parse.
+     * @return DateInterval The parsed interval.
+     * @throws InvalidArgumentException If the given string is not a valid interval.
      * @throws \DateMalformedIntervalStringException
      */
-    private static function parseInterval(string $intervalString): \DateInterval
+    private static function parseInterval(string $intervalString): DateInterval
     {
         $intervalString = ltrim($intervalString, '+');
         $parts = [
@@ -78,6 +95,6 @@ class ExecuteTimeOperands
             throw new InvalidArgumentException("Invalid interval format: $intervalString");
         }
 
-        return new \DateInterval(sprintf('PT%dH%dM%dS', $parts['h'], $parts['m'], $parts['s']));
+        return new DateInterval(sprintf('PT%dH%dM%dS', $parts['h'], $parts['m'], $parts['s']));
     }
 }

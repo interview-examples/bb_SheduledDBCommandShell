@@ -1,8 +1,12 @@
 <?php
 
+$config = require __DIR__ . '/config.php';
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$config = require __DIR__ . '/../config/database.php';
+date_default_timezone_set($config['timezone']);
+
+$configDB = require __DIR__ . '/../config/database.php';
 
 use App\Framework\Router;
 use App\Repository\DatabaseInitializer;
@@ -11,13 +15,13 @@ use App\Controller\TaskController;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-DatabaseInitializer::initialize($config);
+DatabaseInitializer::initialize($configDB);
 
 $pdo = new PDO(
-    $config['connection'].';dbname='.$config['dbname'],
-    $config['username'],
-    $config['password'],
-    $config['options']
+    $configDB['connection'].';dbname='.$configDB['dbname'],
+    $configDB['username'],
+    $configDB['password'],
+    $configDB['options']
 );
 
 $loader = new FilesystemLoader(__DIR__ . '/../views');

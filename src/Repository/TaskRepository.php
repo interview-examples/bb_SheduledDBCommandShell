@@ -9,10 +9,12 @@ use PDO;
 class TaskRepository
 {
     private PDO $pdo;
+    private string $timezone;
 
-    public function __construct(PDO $pdo)
+    public function __construct(PDO $pdo, string $timezone = 'Asia/Jerusalem')
     {
         $this->pdo = $pdo;
+        $this->timezone = $timezone;
     }
 
     public function addTask(Task $task): Task
@@ -48,6 +50,13 @@ VALUES (:command, :description, :executeAt, :status)");
         return $task;
     }
 
+    /**
+     * Find tasks that should be executed between $startTime and $endTime.
+     *
+     * @param string $startTime The start time (inclusive) of the time range.
+     * @param string $endTime The end time (inclusive) of the time range.
+     * @return Task[] The tasks that should be executed between $startTime and $endTime.
+     */
     public function findTasksToExecute(string $startTime, string $endTime): array
     {
         $stmt = $this->pdo->prepare("SELECT * FROM tasks WHERE (executeAt BETWEEN :startTime AND :endTime) AND status = 'pending'");
@@ -68,11 +77,6 @@ VALUES (:command, :description, :executeAt, :status)");
     {
         $stmt = $this->pdo->prepare("DELETE FROM tasks WHERE id = :id");
         $stmt->execute(['id' => $taskId]);
-    }
-
-    public function clearTasks(): void
-    {
-        $this->pdo->query("DELETE FROM tasks");
     }
 
     public function findAllTasks(): array
@@ -114,10 +118,17 @@ VALUES (:command, :description, :executeAt, :status)");
         return $tasks;
     }
 
+    /**
+     * Emulates "write to DB" command. Stores task with ID $id and description $description to the 'log_executed_tasks' table.
+     *
+     * @param int $id The ID of the task that was executed.
+     * @param string $description A description of the executed task.
+     */
     public function executeWriteToDBTask(int $id, string $description): void
     {
+        global $config;
         $dateTime = Carbon::now();
-        $dateTime->setTimezone('Asia/Jerusalem');   // Note: Bad practise to hardcode timezone
+        $dateTime->setTimezone($this->timezone);
         $stmt = $this->pdo->prepare("INSERT INTO log_executed_tasks (taskId, description, executedAt) 
 VALUES (:id, :description, :executedAt)");
         $stmt->execute([
