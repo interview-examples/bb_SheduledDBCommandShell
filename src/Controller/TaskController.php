@@ -41,6 +41,20 @@ class TaskController
         }
         $totalTasks = $this->repository->countAllTasks();
 
+        if (PHP_SAPI === 'cli') {
+            $this->renderCli($tasks, $page, $totalTasks, $tasksPerPage);
+        } else {
+            $this->renderWeb($tasks, $page, $totalTasks, $tasksPerPage);
+        }
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    private function renderWeb($tasks, $page, $totalTasks, $tasksPerPage): void
+    {
         if ($totalTasks > 0) {
             $this->twig->display('tasks/list.html.twig', [
                 'tasks' => $tasks,
@@ -49,6 +63,43 @@ class TaskController
             ]);
         } else {
             $this->twig->display('tasks/empty_list.html.twig');
+        }
+    }
+
+    private function renderCli($tasks, $page, $totalTasks, $tasksPerPage): void
+    {
+        if ($totalTasks > 0) {
+            echo "Tasks (Page $page of " . ceil($totalTasks / $tasksPerPage) . "):\n\n";
+            echo "+----+-----------------+-----------------+---------------------+----------+\n";
+            echo "| ID | Command         | Description     | Execute At          | Status   |\n";
+            echo "+----+-----------------+-----------------+---------------------+----------+\n";
+
+            foreach ($tasks as $task) {
+                echo sprintf(
+                    "| %2d | %-15s | %-15s | %-19s | %-8s |\n",
+                    $task->getId(),
+                    $task->getCommand(),
+                    $task->getDescription(),
+                    $task->getExecuteAt(),
+                    $this->colorStatus($task->getStatus())
+                );
+            }
+
+            echo "+----+-----------------+-----------------+---------------------+----------+\n";
+        } else {
+            echo "No tasks available.\n";
+        }
+    }
+
+    private function colorStatus(string $status): string
+    {
+        switch ($status) {
+            case 'executed':
+                return "\033[32m" . str_pad($status, 7) . "\033[0m"; // Зеленый цвет
+            case 'error':
+                return "\033[31m" . str_pad($status, 7) . "\033[0m"; // Красный цвет
+            default:
+                return str_pad($status, 7);
         }
     }
 
