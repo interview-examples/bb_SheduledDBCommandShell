@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/bb_SheduledDBCommanShell.iml" filepath="$PROJECT_DIR$/.idea/bb_SheduledDBCommanShell.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/bb_SheduledDBCommandShell.iml" filepath="$PROJECT_DIR$/.idea/bb_SheduledDBCommandShell.iml" />
     </modules>
   </component>
 </project>
