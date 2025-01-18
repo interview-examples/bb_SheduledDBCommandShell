@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Model\Task;
+use Carbon\Carbon;
 use PDO;
 
 class TaskRepository
@@ -111,5 +112,18 @@ VALUES (:command, :description, :executeAt, :status)");
             $tasks[] = $objTask;
         }
         return $tasks;
+    }
+
+    public function executeWriteToDBTask(int $id, string $description): void
+    {
+        $dateTime = Carbon::now();
+        $dateTime->setTimezone('Asia/Jerusalem');   // Note: Bad practise to hardcode timezone
+        $stmt = $this->pdo->prepare("INSERT INTO log_executed_tasks (taskId, description, executedAt) 
+VALUES (:id, :description, :executedAt)");
+        $stmt->execute([
+            'id' => $id,
+            'description' => $description,
+            'executeAt' => $dateTime
+        ]);
     }
 }

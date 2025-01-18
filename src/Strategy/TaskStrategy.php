@@ -18,7 +18,7 @@ class TaskStrategy implements TaskStrategyInterface
     {
         switch ($task->getCommand()) {
             case 'write to db':
-                $this->taskRepository->logExecutedTask($task->getDescription());    // ToDo method
+                $this->taskRepository->executeWriteToDBTask($task->getId(), $task->getDescription());
                 break;
             case 'send email':
                 mail('vit.trakhtenberg@gmail.com', 'Scheduled Task', $task->getDescription());  // FixMe change email after
