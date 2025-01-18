@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Repository\TaskRepository;
 use App\Utils\CommandOperands;
 use App\Utils\InputSanitizer;
-use http\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
