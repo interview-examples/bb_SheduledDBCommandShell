@@ -98,9 +98,9 @@ VALUES (:command, :description, :executeAt, :status)");
         return (int)$stmt->fetchColumn();
     }
 
-    public function removeAllTasks()
+    public function removeAllTasks(): void
     {
-        $stmt = $this->pdo->query("DELETE FROM tasks");
+        $this->pdo->query("DELETE FROM tasks");
     }
 
     private function fetchResultToTasksObject(array $queryResult): array {

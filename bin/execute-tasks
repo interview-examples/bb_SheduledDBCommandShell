@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-pcntl_signal(SIGQUIT, function () {
+pcntl_signal(SIGQUIT, static function () {
     echo "Received SIGQUIT, cleaning up...\n";
     exit(0);
 });

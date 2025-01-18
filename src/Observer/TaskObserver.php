@@ -35,7 +35,7 @@ class TaskObserver implements TaskObserverInterface
         }
     }*/
 
-    public function update(Task|\App\Observer\Task $task): void
+    public function update(Task $task): void
     {
         try {
             $this->taskStrategy->execute($task);
