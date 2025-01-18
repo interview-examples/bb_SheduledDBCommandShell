@@ -26,8 +26,8 @@ class Task
         $this->setStatus($status);
     }
 
-    public function getId(): int {
-        return $this->id;
+    public function getId(): ?int {
+        return $this->id ?? null;
     }
 
     /**
