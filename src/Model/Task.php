@@ -9,7 +9,7 @@ use RuntimeException;
 
 class Task
 {
-    private int $id;
+    private int $id = -1;
     private string $command;
     private string $description;
     private string $executeAt;
